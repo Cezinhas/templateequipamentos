@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Template para Entrada de Equipamentos no Milvus</title>
+
+    <link rel="icon" href="https://www.w2z.com.br/wp-content/uploads/2019/08/cropped-small-logo-32x32.png" type="image/png">
+
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            padding: 20px;
+        }
+        label {
+            margin-top: 10px;
+            display: block;
+        }
+        input, select, textarea {
+            width: 100%;
+            padding: 5px; /* Reduzido o padding para fazer as caixas mais compactas */
+            margin-top: 5px;
+            margin-bottom: 5px; /* Diminuí o espaço entre os campos */
+            font-size: 14px; /* Ajuste no tamanho da fonte para os campos */
+        }
+        button {
+            padding: 10px 15px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            cursor: pointer;
+            font-size: 16px;
+        }
+        button:hover {
+            background-color: #45a049;
+        }
+        .output {
+            margin-top: 20px;
+            padding: 10px;
+            border: 1px solid #ccc;
+            background-color: #f9f9f9;
+        }
+        /* Ajuste do tamanho da área de texto da frase gerada */
+        #fraseGerada {
+            width: 100%;
+            height: 150px; /* Aumentei a altura do campo */
+            font-size: 14px;
+            padding: 10px;
+            border: 1px solid #ccc;
+            resize: none; /* Impede o redimensionamento manual */
+        }
+    </style>
+</head>
+<body>
+    <h2>Template para Entrada de Equipamentos no Milvus</h2>
+    <form id="form">
+        <label for="equipamento">Tipo de Equipamento:*</label>
+        <select id="equipamento" name="equipamento" required>
+            <option value="">Selecione...</option>
+            <option value="Computador">Computador</option>
+            <option value="Notebook">Notebook</option>
+        </select>
+
+        <label for="modelo">Modelo/Nome do Equipamento:*</label>
+        <input type="text" id="modelo" name="modelo" required>
+
+        <label for="servico">Serviço a ser Realizado:*</label>
+        <textarea type="text" id="servico" name="servico" required placeholder="Descreva o serviço a ser realizado no equipamento"></textarea>
+
+        <label for="serial">Número de Série:*</label>
+        <input type="text" id="serial" name="serial" required placeholder="Se não houver, escrever 'Não possui ou Não visível'">
+
+        <label for="entrega">Data de Entrega (se aplicável):</label>
+        <input type="date" id="entrega" name="entrega">
+
+        <label for="observacoes">Observações (Defeitos/outros):</label>
+        <textarea id="observacoes" name="observacoes" placeholder="Digite se posusi alguma peça quebrada ou com defeito ou alguma observação relevante"></textarea>
+
+        <label for="ticket">Número do Ticket de Retirada (se aplicável):</label>
+        <input type="text" id="ticket" name="ticket" placeholder="Caso não tenha ticket, deixar em branco">
+
+        <label for="cliente">Nome do Cliente que trouxe Equipamento(se aplicável):</label>
+        <input type="text" id="cliente" name="cliente" oninput="atualizarTecnicos()" placeholder="Deixe em branco se não for cliente">
+
+        <label for="tecnico">Selecione o Técnico:*</label>
+        <select id="tecnico" name="tecnico" required>
+            <option value="">Selecione...</option>
+            <option value="Tiago Zabaglia">Tiago Zabaglia</option>
+            <option value="Alexandre">Alexandre</option>
+            <option value="Andre">Andre</option>
+            <option value="Wendel">Wendel</option>
+            <option value="Tiago Cuba">Tiago Cuba</option>
+        </select>
+		
+        <button type="button" onclick="gerarFrase()">Gerar Frase</button>
+		<h6>* obrigatório</h6>
+    </form>
+
+    <div class="output">
+        <h3>Frase Gerada:</h3>
+        <textarea id="fraseGerada" readonly></textarea>
+        <button onclick="copiarFrase()">Copiar para Área de Transferência</button>
+    </div>
+
+    <script>
+        // Função que atualiza a lista de técnicos dependendo se o cliente é preenchido ou não
+        function atualizarTecnicos() {
+            const cliente = document.getElementById("cliente").value;
+            const tecnicoSelect = document.getElementById("tecnico");
+
+            // Se houver um nome de cliente, oferece os técnicos Gabriel Pratti ou Gabriel Marotti
+            if (cliente) {
+                tecnicoSelect.innerHTML = `
+                    <option value="">Selecione...</option>
+                    <option value="Gabriel Pratti">Gabriel Pratti</option>
+                    <option value="Gabriel Marotti">Gabriel Marotti</option>
+                `;
+            } else {
+                // Caso contrário, volta para a lista de técnicos originais
+                tecnicoSelect.innerHTML = `
+                    <option value="">Selecione...</option>
+                    <option value="Tiago Zabaglia">Tiago Zabaglia</option>
+                    <option value="Alexandre">Alexandre</option>
+                    <option value="Andre">Andre</option>
+                    <option value="Wendel">Wendel</option>
+                    <option value="Tiago Cuba">Tiago Cuba</option>
+                `;
+            }
+        }
+
+        // Função para formatar a data no formato DD/MM/AAAA
+        function formatarData(data) {
+            const d = new Date(data);
+            const dia = String(d.getDate()).padStart(2, '0'); // Adiciona zero à esquerda, se necessário
+            const mes = String(d.getMonth() + 1).padStart(2, '0'); // Meses começam de 0, então somamos 1
+            const ano = d.getFullYear();
+
+            return `${dia}/${mes}/${ano}`;
+        }
+
+        function gerarFrase() {
+    // Verifica se o formulário é válido
+    const form = document.getElementById("form");
+    if (!form.checkValidity()) {
+        alert("Por favor, preencha todos os campos obrigatórios.");
+        return;  // Impede a execução do código se o formulário não for válido
+    }
+
+    const equipamento = document.getElementById("equipamento").value;
+    const modelo = document.getElementById("modelo").value;
+    const servico = document.getElementById("servico").value;
+    const serial = document.getElementById("serial").value;
+    const entrega = document.getElementById("entrega").value;
+    const observacoes = document.getElementById("observacoes").value;
+    const ticket = document.getElementById("ticket").value;
+    const tecnico = document.getElementById("tecnico").value;
+    const cliente = document.getElementById("cliente").value;
+
+    let frase = `Retirado ${equipamento} ${modelo} - ${servico}\nSerial: ${serial}`;
+
+    // Adiciona a data de entrega se estiver preenchida
+    if (entrega) {
+        frase += `\nEntrega: ${formatarData(entrega)}`;
+    }
+
+    // Adiciona as observações se estiverem preenchidas
+    if (observacoes) {
+        frase += `\nObs: ${observacoes}`;
+    }
+
+    frase += `\n\n`;
+
+    if (cliente) {
+        frase += `${cliente} trouxe até W2Z atendido por ${tecnico}.`;
+    } else {
+        frase += `Retirado no ticket ${ticket} pelo técnico ${tecnico}.`;
+    }
+
+    document.getElementById("fraseGerada").value = frase;
+}
+
+
+        function copiarFrase() {
+            const frase = document.getElementById("fraseGerada");
+            frase.select();
+            document.execCommand("copy");
+            alert("Frase copiada para a área de transferência!");
+        }
+    </script>
+</body>
+</html>
