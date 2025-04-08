@@ -59,7 +59,7 @@
             <option value="">Selecione...</option>
             <option value="Computador">Computador</option>
             <option value="Notebook">Notebook</option>
-            <option value="Notebook">Servidor</option>
+            <option value="Servidor">Servidor</option>
         </select>
 
         <label for="modelo">Modelo/Nome do Equipamento:*</label>
@@ -157,7 +157,7 @@
     const tecnico = document.getElementById("tecnico").value;
     const cliente = document.getElementById("cliente").value;
 
-    let frase = `Retirado ${equipamento} ${modelo} - ${servico}\nSerial: ${serial}`;
+    let frase = `${equipamento} ${modelo} - ${servico}\nSerial: ${serial}`;
 
     // Adiciona a data de entrega se estiver preenchida
     if (entrega) {
@@ -172,7 +172,7 @@
     frase += `\n\n`;
 
     if (cliente) {
-        frase += `${cliente} trouxe até W2Z atendido por ${tecnico}.`;
+        frase += `${cliente} trouxe até W2Z, atendido por ${tecnico}.`;
     } else {
         frase += `Retirado no ticket ${ticket} pelo técnico ${tecnico}.`;
     }
